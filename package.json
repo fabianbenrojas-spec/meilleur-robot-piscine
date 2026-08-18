@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint || eslint .",
+    "lint": "eslint .",
     "preflight": "node scripts/preflight.mjs",
     "new-page": "node scripts/new-page.mjs",
     "check:seo": "node scripts/check-seo.mjs",
@@ -29,14 +29,16 @@
     "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.6",
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "^0.5.20",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@typescript-eslint/eslint-plugin": "^8.67.0",
+    "@typescript-eslint/parser": "^8.67.0",
     "eslint": "^9.39.5",
-    "eslint-config-next": "^16.3.1",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
     "sharp": "^0.35.3",
     "tailwindcss": "^4",
     "typescript": "^5"
