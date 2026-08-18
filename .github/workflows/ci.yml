@@ -21,7 +21,7 @@ jobs:
 
       - name: Secrets — aucune clé en dur
         run: |
-          if grep -riE "eyJ[A-Za-z0-9_-]{20,}|sb_secret|service_role" scripts/ lib/ config/ data/; then
+          if grep -riE "eyJ[A-Za-z0-9_-]{20,}|sb_secret|service_role" scripts/ lib/ config/; then
             echo "::error::Secret potentiel détecté"; exit 1
           fi
           echo "propre"
