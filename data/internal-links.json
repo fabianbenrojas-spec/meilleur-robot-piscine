@@ -1,0 +1,30 @@
+{
+  "_comment": "Source de vérité du maillage interne. A -> B implique B -> A. Max 6 liens contextuels par page, min 2. Vérifié par scripts/check-maillage.mjs au build. Voir docs/TEMPLATES-PAGES.md §10 pour la matrice par gabarit.",
+  "_exemple": "Retirer cette clé et les deux ci-dessus à la première vraie entrée.",
+  "/": [
+    "/comparatif/robot-piscine-sans-fil",
+    "/aspirateur-piscine",
+    "/outil/selecteur-robot-piscine"
+  ],
+  "/comparatif/robot-piscine-sans-fil": [
+    "/",
+    "/comparatif/robot-piscine-hors-sol",
+    "/guide/robot-sans-fil-ou-filaire"
+  ],
+  "/aspirateur-piscine": [
+    "/",
+    "/comparatif/robot-piscine-sans-fil"
+  ],
+  "/outil/selecteur-robot-piscine": [
+    "/",
+    "/comparatif/robot-piscine-sans-fil"
+  ],
+  "/comparatif/robot-piscine-hors-sol": [
+    "/comparatif/robot-piscine-sans-fil",
+    "/guide/robot-sans-fil-ou-filaire"
+  ],
+  "/guide/robot-sans-fil-ou-filaire": [
+    "/comparatif/robot-piscine-sans-fil",
+    "/comparatif/robot-piscine-hors-sol"
+  ]
+}

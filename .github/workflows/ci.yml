@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# La CI NE lance PAS `next build` : la préproduction Vercel le fait déjà sur la
+# même PR et son échec bloque déjà le merge. Deux builds pour un commit, c'est
+# deux compteurs pour un seul travail (DOCTRINE-RESEAU §3.5).
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+
+      - name: Secrets — aucune clé en dur
+        run: |
+          if grep -riE "eyJ[A-Za-z0-9_-]{20,}|sb_secret|service_role" scripts/ lib/ config/ data/; then
+            echo "::error::Secret potentiel détecté"; exit 1
+          fi
+          echo "propre"
+
+      - name: Types
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: preflight — mécanismes canoniques et garde-fous
+        run: npm run preflight
+        env:
+          MARKET: be-fr
+
+      - name: check:seo
+        run: npm run check:seo
+
+      - name: check:maillage
+        run: npm run check:maillage
+
+      - name: check:placeholders
+        run: npm run check:placeholders
+
+      - name: check:prices
+        run: npm run check:prices

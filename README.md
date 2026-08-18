@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# meilleur-robot-piscine.be
 
-## Getting Started
+Comparateur éditorial indépendant de robots et aspirateurs de piscine pour le
+marché belge. Next.js 15 App Router, TypeScript, Tailwind v4, MDX + JSON
+versionnés, Vercel.
 
-First, run the development server:
+Marché déployé : `be-fr`. Marchés préparés : `be-nl`, `fr-fr`.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## Par où commencer
+
+| Ordre | Fichier | Ce que ça règle |
+|---|---|---|
+| 0 | `docs/DOCTRINE-RESEAU.md` | Fait autorité sur l'architecture réseau |
+| 1 | `docs/SETUP-STEP-BY-STEP.md` | **Commence ici pour agir.** Repo, Vercel, DNS, Search Console |
+| 2 | `docs/00-DECISIONS-STRUCTURANTES.md` | Stack, domaines, ce qui manque encore |
+| 3 | `docs/HERITAGE-ASPIRATEURS.md` | Ce qu'on reprend du réseau aspirateurs, et ce qu'on écarte |
+| 2 | `CLAUDE.md` | Les règles que Claude Code lit à chaque session |
+| 4 | `docs/ARBORESCENCE.md` | Les 164 URLs, validées contre les exports Semrush |
+| 5 | `docs/TEMPLATES-PAGES.md` | La structure de chaque type de page |
+| 6 | `docs/SEO-GEO-REDACTION.md` | Comment on écrit |
+| 7 | `docs/CATALOGUE-AMAZON-BE.md` | Le protocole de collecte du catalogue |
+
+---
+
+## Structure
+
+```
+CLAUDE.md                    règles de session, garde-fous non négociables
+DECISIONS.md                 journal des décisions et des content gaps
+config/
+  site.config.ts             résout le marché depuis process.env.MARKET
+  markets/{be-fr,be-nl,fr-fr}.ts
+  routes/                    segments d'URL traduits par marché
+  routes.config.ts           toutes les URLs internes passent par ici
+data/
+  product.schema.ts          schéma unique du catalogue, champs en anglais
+  page-registry.ts           une entrée par page commerciale : cluster, intention, liens typés
+  merchants.ts               registre des marchands et de leurs programmes
+  internal-links.json        source de vérité du maillage, vérifiée au build
+  catalogue-a-remplir.csv    62 modèles à documenter, ordonnés par volume BE
+  keywords/
+    clusters-be-fr.csv       2 437 requêtes ≥ 10/mois, mappées à leur page cible
+    clusters-summary-be-fr.csv
+  products/                  un JSON par modèle (à générer depuis le CSV)
+docs/                        doctrine, arborescence, gabarits, protocoles
+skills/                      skills Claude Code du projet
+scripts/                     contrôles CI
+content/be-fr/               les pages MDX
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Commandes
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run dev                  # MARKET=be-fr par défaut
+MARKET=be-nl npm run dev     # prévisualiser un autre marché
 
-## Learn More
+npm run preflight            # inventaire des mécanismes canoniques
+npm run new-page -- --type comparatif --slug robot-piscine-sans-fil
+npm run import:catalogue -- data/catalogue-a-remplir.csv
 
-To learn more about Next.js, take a look at the following resources:
+npm run check:all            # les cinq contrôles, dans l'ordre de la CI
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Les six garde-fous
 
-## Deploy on Vercel
+1. **Zéro chiffre en prose.** Tout passe par un composant adossé à
+   `data/products/`.
+2. **Source unique et datée.** `sourceUrl` + `sourcedAt` sur chaque fait,
+   `priceCheckedAt` sur chaque prix. Si la source ne confirme pas : `null`.
+3. **Donnée absente = bloc absent.** Aucune valeur par défaut, jamais. Pas de
+   note, pas de `aggregateRating`, pas de `reviewCount` inventé.
+4. **Aucun `Review` sans `Person` nommée.** `author: Organization` est interdit.
+5. **Aucune page indexable sans contenu réel.**
+6. **Content gap documenté** dans `DECISIONS.md` avant création.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Détail dans `CLAUDE.md`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## Discipline de livraison
+
+Une branche `content/<silo>-<slug>` et une PR par page. Jamais de commit
+direct sur `main`. La livraison d'un agent s'arrête à l'ouverture de la PR :
+le merge est une décision humaine, y compris quand toute la CI est verte.

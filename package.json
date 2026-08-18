@@ -6,21 +6,41 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "preflight": "node scripts/preflight.mjs",
+    "new-page": "node scripts/new-page.mjs",
+    "check:seo": "node scripts/check-seo.mjs",
+    "check:maillage": "node scripts/check-maillage.mjs",
+    "check:placeholders": "node scripts/check-placeholders.mjs",
+    "check:prices": "node scripts/check-prices.mjs",
+    "check:all": "npm run preflight && npm run check:seo && npm run check:maillage && npm run check:placeholders && npm run check:prices",
+    "import:catalogue": "node scripts/import-catalogue.mjs",
+    "check:hreflang": "node scripts/check-hreflang.mjs",
+    "check:images": "node scripts/check-images.mjs",
+    "build:images": "node scripts/build-images.mjs",
+    "check:secrets": "grep -riE 'eyJ[A-Za-z0-9_-]{20,}|sb_secret|service_role' scripts/ lib/ config/ data/ && exit 1 || echo propre"
   },
   "dependencies": {
+    "gray-matter": "^4.0.3",
     "next": "16.3.1",
+    "next-mdx-remote": "^6.0.0",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@tailwindcss/typography": "^0.5.20",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.1",
+    "sharp": "^0.35.3",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=20.9"
   }
 }
