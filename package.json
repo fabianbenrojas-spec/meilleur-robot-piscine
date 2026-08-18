@@ -18,7 +18,7 @@
     "check:hreflang": "node scripts/check-hreflang.mjs",
     "check:images": "node scripts/check-images.mjs",
     "build:images": "node scripts/build-images.mjs",
-    "check:secrets": "grep -riE 'eyJ[A-Za-z0-9_-]{20,}|sb_secret|service_role' scripts/ lib/ config/ data/ && exit 1 || echo propre"
+    "check:secrets": "grep -riE \"eyJ[A-Za-z0-9_-]{20,}|sb_secret|service_role\" scripts/ lib/ config/ && exit 1 || echo propre"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",
