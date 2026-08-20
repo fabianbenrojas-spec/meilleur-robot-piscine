@@ -5,7 +5,7 @@
  * Colonnes explicites partout : pas d'équivalent de `select('*')`. Ce que la
  * page consomme est ce que le type déclare.
  */
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { Product, MerchantOffer } from "@/data/product.schema";
 import { siteConfig } from "@/config/site.config";
@@ -16,6 +16,12 @@ let cache: Product[] | null = null;
 
 function loadAll(): Product[] {
   if (cache) return cache;
+  // Un catalogue vide est un état légitime au lancement, pas une panne :
+  // notFound() côté page, jamais un throw (CLAUDE.md §7).
+  if (!existsSync(DIR)) {
+    cache = [];
+    return cache;
+  }
   cache = readdirSync(DIR)
     .filter((f) => f.endsWith(".json"))
     .map((f) => JSON.parse(readFileSync(join(DIR, f), "utf8")) as Product);
